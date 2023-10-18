@@ -2,10 +2,18 @@ const express = require("express");
 const UserModel = require("../model/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const authorizeMiddleware = require("../middlewares/authorizeMiddlware");
 
 const userRouter = express.Router();
 
-userRouter.post("/signup", async (req, res) => {
+userRouter.get("/",authorizeMiddleware, async (req, res) => {
+  
+  const userId = req.userId;
+  const checkForUser= await UserModel.findOne({ _id:userId });
+  res.send(checkForUser) 
+  
+});
+userRouter.post("/signup",  async (req, res) => {
   const {userName, email, password } = req.body;
 
   const checkForAlreadyRegisteredUser = await UserModel.findOne({ email });
