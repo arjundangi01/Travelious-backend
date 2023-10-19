@@ -3,18 +3,18 @@ const UserModel = require("../model/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const authorizeMiddleware = require("../middlewares/authorizeMiddlware");
+const TourModel = require("../model/tourHistory.model");
 
 const userRouter = express.Router();
 
-userRouter.get("/",authorizeMiddleware, async (req, res) => {
-  
+userRouter.get("/", authorizeMiddleware, async (req, res) => {
   const userId = req.userId;
-  const checkForUser= await UserModel.findOne({ _id:userId });
-  res.send(checkForUser) 
-  
+  const checkForUser = await UserModel.findOne({ _id: userId });
+  const bookingHistory = await TourModel.find({ userId });
+  res.send({ userData: checkForUser, bookingHistory });
 });
-userRouter.post("/signup",  async (req, res) => {
-  const {userName, email, password } = req.body;
+userRouter.post("/signup", async (req, res) => {
+  const { userName, email, password } = req.body;
 
   const checkForAlreadyRegisteredUser = await UserModel.findOne({ email });
   if (checkForAlreadyRegisteredUser) {
@@ -22,8 +22,8 @@ userRouter.post("/signup",  async (req, res) => {
   }
 
   bcrypt.hash(password, 5, async function (err, hash) {
-      const newRegisteredUser = await UserModel.create({
-        userName,
+    const newRegisteredUser = await UserModel.create({
+      userName,
       email,
       password: hash,
     });

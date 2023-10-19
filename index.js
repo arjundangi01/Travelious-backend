@@ -3,6 +3,7 @@ const cors = require('cors')
 const express = require('express');
 const mongoDBConnection = require('./config/db');
 const userRouter = require('./routes/user.routes');
+const tourRouter = require('./routes/tour.routes');
 
 require('dotenv').config();
 
@@ -20,6 +21,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/travelious_user', userRouter);
+app.use('/travelious_tour',tourRouter)
 
 app.listen(PORT, async () => {
     try {
