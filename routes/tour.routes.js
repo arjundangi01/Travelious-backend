@@ -54,6 +54,7 @@ tourRouter.get("/", async (req, res) => {
     }
 
     res.send(tourDataForResponse);
+    //err
   } catch (error) {
     console.log("error while getting tour request", error);
   }
