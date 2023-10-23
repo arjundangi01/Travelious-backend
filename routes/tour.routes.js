@@ -30,9 +30,12 @@ tourRouter.get("/", async (req, res) => {
     }
 
     let tourDataForResponse;
-
+    let totalResult;
+    let totalPage;
     if (sort) {
       if (sort == "asc") {
+        totalResult = await TourModel.find(filterObj).count()
+        totalPage = Math.ceil(totalResult / 9)
         tourDataForResponse = await TourModel.find(filterObj)
           .sort({
             cost: 1,
@@ -40,6 +43,8 @@ tourRouter.get("/", async (req, res) => {
           .skip(skipBy)
           .limit(9);
       } else {
+        totalResult = await TourModel.find(filterObj).count()
+        totalPage = Math.ceil(totalResult / 9)
         tourDataForResponse = await TourModel.find(filterObj)
           .sort({
             cost: -1,
@@ -48,12 +53,15 @@ tourRouter.get("/", async (req, res) => {
           .limit(9);
       }
     } else {
+      totalResult = await TourModel.find(filterObj).count()
+      totalPage = Math.ceil(totalResult / 9)
       tourDataForResponse = await TourModel.find(filterObj)
         .skip(skipBy)
         .limit(9);
     }
-
-    res.send(tourDataForResponse);
+   
+    console.log('totalpage', totalPage)
+    res.send({tourData:tourDataForResponse,totalPage});
     //err
   } catch (error) {
     console.log("error while getting tour request", error);
